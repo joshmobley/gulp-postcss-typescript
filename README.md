@@ -1,4 +1,4 @@
-# Starter Project - Gulp/Babel/TypeScript
+# Starter Project - Gulp/PostCSS/TypeScript
 
 This project is to build a reusable scaffolding for use with javascript and css builds. It includes the following:
 
