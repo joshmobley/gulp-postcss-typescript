@@ -5,6 +5,13 @@
 
 export class Header{
 
-    constructor(){}
+  prop: string;
+
+  someMethod () : string {
+
+    this.prop = 'baz';
+    return this.prop;
+
+  }
 
 }

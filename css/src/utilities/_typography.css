@@ -3,6 +3,6 @@
 ** @description: utility stylesheet to set tyopgraphy styles
 */
 
-h1{
-    color: $secondary;
+h1 {
+  color: $secondary;
 }

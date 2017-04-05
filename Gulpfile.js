@@ -1,6 +1,6 @@
 /*
 ** @name Project Starter
-** @version 1.0.0
+** @version 1.1.0
 ** @description A starter package and gulpfile for continuous-build development.
 ** @author Josh Mobley
 ** @license GNU GPLv3
@@ -10,6 +10,8 @@
 var gulp         = require('gulp');
 var browserSync  = require('browser-sync').create();
 var postcss      = require('gulp-postcss');
+var stylelint    = require('gulp-stylelint');
+var eslint       = require('gulp-eslint');
 var sourcemaps   = require('gulp-sourcemaps');
 var typescript   = require('gulp-typescript');
 var plumber      = require('gulp-plumber');
@@ -35,16 +37,17 @@ gulp.task('browser-sync', function() {
     browserSync.init({
         proxy: "localhost:8888/tools/project-starters/gulp-postcss-typescript"  // this assumes a MAMP-based localhost
     });
-    
+
 });
-    
+
 // CSS
 gulp.task('css', function() {
 
     // configure postcss + load modules
     var postcssConfig = postcss([
         require( 'precss' ),
-        require( 'autoprefixer' )
+        require( 'autoprefixer' ),
+        require( 'cssnano' )
     ]);
 
     // configure error message via notify
@@ -53,7 +56,14 @@ gulp.task('css', function() {
     });
 
     return gulp
-        .src( styles.path + styles.entry )      // file input
+        .src( styles.path + '**/*.css' )      // file input
+        .pipe( stylelint({
+          failAfterError: false,
+          reporters: [
+            { formatter: 'string', console: true },
+            { formatter: 'verbose', console: true },
+          ],
+        }))
         .pipe( sourcemaps.init() )              // create sourcemaps
         .pipe( postcssConfig )                  // configure postcss
         .on( 'error', errorHandler )            // report errors via notify
@@ -61,10 +71,10 @@ gulp.task('css', function() {
         .pipe( sourcemaps.write() )             // write sourcemaps to disk
         .pipe( gulp.dest( styles.dist ))        // write css to disk
         .pipe( browserSync.stream() );          // stream changes into browser
-       
+
 });
 
-// TYPESCRIPT 
+// TYPESCRIPT
 gulp.task("ts", function() {
 
     // configure babel
@@ -81,7 +91,12 @@ gulp.task("ts", function() {
 
     return gulp
         .src( scripts.path + '**/*.ts' )        // input files
-        .pipe( tsConfig )                       // transpile via babel
+        .pipe( eslint({
+            fix: true,
+            parser: 'typescript-eslint-parser'
+        }))
+        .pipe( eslint.format() )
+        .pipe( tsConfig )                       // transpile via typescript
         .on( 'error', errorHandler )            // report error via notify
         .pipe( plumber() )                      // continue gulp build on error
         .pipe( sourcemaps.init() )              // create sourcemaps
