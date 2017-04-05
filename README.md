@@ -6,7 +6,7 @@ This project is to build a reusable scaffolding for use with javascript and css 
 
 - Gulp
 - Typescript
-- SASS
+- Postcss
 - Require.JS
 - jQuery
 - ESLint
